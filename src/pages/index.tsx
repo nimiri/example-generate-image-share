@@ -14,9 +14,10 @@ export default function Home() {
   }, []);
 
   const onGenerateButtonClick = useCallback(async () => {
+    const imageTarget = document.getElementById("imageTarget");
     const imageArea = document.getElementById("imageArea");
 
-    if (ref.current === null || !imageArea) {
+    if (!imageTarget || !imageArea) {
       return;
     }
 
@@ -24,7 +25,7 @@ export default function Home() {
     imageArea.innerHTML = "";
 
     htmlToImage
-      .toPng(ref.current, {
+      .toPng(imageTarget, {
         skipFonts: true,
         cacheBust: true,
         backgroundColor: "#ffd900",
