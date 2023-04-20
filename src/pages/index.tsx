@@ -1,11 +1,16 @@
 import Head from "next/head";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { url } from "@/utils/config";
 import * as htmlToImage from "html-to-image";
 
 export default function Home() {
   const ref = useRef<HTMLDivElement>(null);
   const [inputValue, setInputValue] = useState<string>("ぽえぽえ〜");
+  const [isShareable, setIsShareable] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsShareable(navigator && !!navigator.share);
+  }, []);
 
   const onGenerateButtonClick = useCallback(async () => {
     const imageArea = document.getElementById("imageArea");
@@ -129,7 +134,7 @@ export default function Home() {
           <div id="imageArea" style={{ width: "100%" }} />
         </div>
 
-        {navigator && !!navigator.share ? (
+        {isShareable ? (
           <button onClick={onShareButtonClick}>Share!</button>
         ) : (
           <p>この環境では navigator.share はできません！</p>
