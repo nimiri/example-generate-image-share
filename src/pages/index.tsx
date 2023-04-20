@@ -49,7 +49,7 @@ export default function Home() {
       .catch((err) => {
         console.log(err);
       });
-  }, [ref]);
+  }, [inputValue]);
 
   const onShareButtonClick = useCallback(async () => {
     if (!file) {
