@@ -7,6 +7,7 @@ export default function Home() {
   const ref = useRef<HTMLDivElement>(null);
   const [inputValue, setInputValue] = useState<string>("ぽえぽえ〜");
   const [isShareable, setIsShareable] = useState<boolean>(false);
+  const [file, setFile] = useState<File>();
 
   useEffect(() => {
     setIsShareable(navigator && !!navigator.share);
@@ -33,6 +34,11 @@ export default function Home() {
         const img = new Image();
         img.src = dataUrl;
 
+        const pngFile = dataURLToPngFile(dataUrl, `${inputValue}.png`);
+        if (pngFile) {
+          setFile(pngFile);
+        }
+
         console.log(img);
 
         const imgNode = document.getElementById("imageArea")?.appendChild(img);
@@ -46,35 +52,48 @@ export default function Home() {
   }, [ref]);
 
   const onShareButtonClick = useCallback(async () => {
-    const img = document.getElementById("imageArea");
-
-    if (img === null) {
+    if (!file) {
       return;
     }
-    htmlToImage.toBlob(img).then(async (blob) => {
-      if (!blob) return;
-      const file = new File([blob], "generated-image.png", {
-        type: "image/png",
-      });
-      const shareData = {
-        files: [file],
-        title: inputValue,
-      };
 
-      if (navigator.share && navigator.canShare(shareData)) {
-        await navigator
-          .share({
-            files: [file],
-            title: inputValue,
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-        // do something else like copying the data to the clipboard
-      }
-    });
-  }, [inputValue]);
+    const shareData = {
+      files: [file],
+      title: inputValue,
+    };
+
+    if (navigator.share && navigator.canShare(shareData)) {
+      await navigator
+        .share({
+          files: [file],
+          title: inputValue,
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      // do something else like copying the data to the clipboard
+    }
+  }, [file, inputValue]);
+
+  const dataURLToPngFile = (dataURL: string, name: string) => {
+    const type = "image/png";
+    const decodedData = window.atob(dataURL.replace(/^.*,/, ""));
+    const buffers = new Uint8Array(decodedData.length);
+
+    for (let i = 0; i < decodedData.length; ++i) {
+      buffers[i] = decodedData.charCodeAt(i);
+    }
+
+    try {
+      const blob = new Blob([buffers.buffer], {
+        type,
+      });
+
+      return new File([blob], `${name}.png`, { type });
+    } catch {
+      return null;
+    }
+  };
 
   return (
     <>
