@@ -53,17 +53,23 @@ export default function Home() {
     }
     htmlToImage.toBlob(img).then(async (blob) => {
       if (!blob) return;
-      const file = new File([blob], "generated-image.png");
+      const file = new File([blob], "generated-image.png", {
+        type: "image/png",
+      });
       const shareData = {
         files: [file],
         title: inputValue,
       };
 
       if (navigator.share && navigator.canShare(shareData)) {
-        await navigator.share({
-          files: [file],
-          title: inputValue,
-        });
+        await navigator
+          .share({
+            files: [file],
+            title: inputValue,
+          })
+          .catch((error) => {
+            console.log(error);
+          });
       } else {
         // do something else like copying the data to the clipboard
       }
