@@ -14,10 +14,10 @@ export default function Home() {
   }, []);
 
   const onGenerateButtonClick = useCallback(async () => {
-    const imageTarget = document.getElementById("imageTarget");
+    const targetArea = document.getElementById("targetArea");
     const imageArea = document.getElementById("imageArea");
 
-    if (!imageTarget || !imageArea) {
+    if (!targetArea || !imageArea) {
       return;
     }
 
@@ -25,11 +25,11 @@ export default function Home() {
     imageArea.innerHTML = "";
 
     htmlToImage
-      .toPng(imageTarget, {
+      .toPng(targetArea, {
         skipFonts: true,
         cacheBust: true,
-        backgroundColor: "#ffd900",
-        style: { transform: "scale(90%)" },
+        // backgroundColor: "#ffd900",
+        // style: { transform: "scale(90%)" },
       })
       .then((dataUrl) => {
         const img = new Image();
@@ -115,7 +115,7 @@ export default function Home() {
       >
         <div
           ref={ref}
-          id="imageTarget"
+          id="targetArea"
           style={{
             border: "solid 1px #fff",
             width: "200px",
@@ -146,7 +146,6 @@ export default function Home() {
           }}
           value={inputValue}
         />
-
         <button onClick={onGenerateButtonClick}>↓ Generate! ↓</button>
 
         <div
