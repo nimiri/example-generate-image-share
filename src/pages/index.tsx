@@ -37,6 +37,7 @@ export default function Home() {
 
         const pngFile = dataURLToPngFile(dataUrl, `${inputValue}.png`);
         if (pngFile) {
+          console.log(pngFile);
           setFile(pngFile);
         }
 
@@ -59,8 +60,8 @@ export default function Home() {
 
     const shareData = {
       files: [file],
-      title: inputValue,
-      type: "image/*",
+      // title: inputValue,
+      type: "image/png",
     };
 
     if (navigator.share && navigator.canShare(shareData)) {
