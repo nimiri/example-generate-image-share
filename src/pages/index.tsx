@@ -7,6 +7,7 @@ export default function Home() {
   const ref = useRef<HTMLDivElement>(null);
   const [inputValue, setInputValue] = useState<string>("ぽえぽえ〜");
   const [isShareable, setIsShareable] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [file, setFile] = useState<File>();
 
   useEffect(() => {
@@ -14,10 +15,12 @@ export default function Home() {
   }, []);
 
   const onGenerateButtonClick = useCallback(async () => {
+    setIsLoading(true);
     const targetArea = document.getElementById("targetArea");
     const imageArea = document.getElementById("imageArea");
 
     if (!targetArea || !imageArea) {
+      setIsLoading(false);
       return;
     }
 
@@ -35,13 +38,10 @@ export default function Home() {
         const img = new Image();
         img.src = dataUrl;
 
-        const pngFile = dataURLToPngFile(dataUrl, `${inputValue}.png`);
+        const pngFile = dataURLToPngFile(dataUrl, `${inputValue}`);
         if (pngFile) {
-          console.log(pngFile);
           setFile(pngFile);
         }
-
-        console.log(img);
 
         const imgNode = document.getElementById("imageArea")?.appendChild(img);
         if (imgNode) {
@@ -50,6 +50,9 @@ export default function Home() {
       })
       .catch((err) => {
         console.log(err);
+      })
+      .finally(() => {
+        setIsLoading(false);
       });
   }, [inputValue]);
 
@@ -153,6 +156,7 @@ export default function Home() {
             position: "relative",
           }}
         >
+          {isLoading && <p>Loading...</p>}
           <div id="imageArea" style={{ width: "100%" }} />
         </div>
 
