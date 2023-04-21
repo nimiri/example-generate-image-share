@@ -60,17 +60,13 @@ export default function Home() {
     const shareData = {
       files: [file],
       title: inputValue,
+      type: "image/png",
     };
 
     if (navigator.share && navigator.canShare(shareData)) {
-      await navigator
-        .share({
-          files: [file],
-          title: inputValue,
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      await navigator.share(shareData).catch((error) => {
+        console.log(error);
+      });
     } else {
       // do something else like copying the data to the clipboard
     }
