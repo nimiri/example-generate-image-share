@@ -60,7 +60,7 @@ export default function Home() {
     const shareData = {
       files: [file],
       title: inputValue,
-      type: "image/png",
+      type: "image/*",
     };
 
     if (navigator.share && navigator.canShare(shareData)) {
